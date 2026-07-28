@@ -1,0 +1,133 @@
+{
+  "$schema": "https://raw.githubusercontent.com/ToolJet/ToolJet/develop/plugins/schemas/operations.schema.json",
+  "title": "Anakin datasource",
+  "description": "A schema defining Anakin operations",
+  "type": "api",
+  "defaults": {},
+  "properties": {
+    "operation": {
+      "label": "Operation",
+      "key": "operation",
+      "type": "dropdown-component-flip",
+      "description": "Single select dropdown for operation",
+      "list": [
+        { "value": "scrape_url", "name": "Extract Website Data" },
+        { "value": "get_scrape_result", "name": "Get Scrape Result" },
+        { "value": "search", "name": "Perform AI Search" },
+        { "value": "agentic_search", "name": "Start Agentic Search" },
+        { "value": "get_agentic_search_result", "name": "Get Agentic Search Result" }
+      ]
+    },
+    "scrape_url": {
+      "url": {
+        "label": "URL",
+        "key": "url",
+        "type": "codehinter",
+        "lineNumbers": false,
+        "description": "The full URL of the website to extract data from",
+        "placeholder": "{{'https://example.com'}}",
+        "width": "320px",
+        "height": "36px",
+        "className": "codehinter-plugins"
+      },
+      "generate_json": {
+        "label": "Generate JSON",
+        "key": "generate_json",
+        "type": "toggle",
+        "description": "AI-extract structured JSON from the page content"
+      },
+      "country": {
+        "label": "Country",
+        "key": "country",
+        "type": "codehinter",
+        "lineNumbers": false,
+        "description": "Proxy country code, e.g. us, gb, de",
+        "placeholder": "{{'us'}}",
+        "width": "320px",
+        "height": "36px",
+        "className": "codehinter-plugins"
+      },
+      "use_browser": {
+        "label": "Use Browser",
+        "key": "use_browser",
+        "type": "toggle",
+        "description": "Use a headless browser — best for JS-heavy sites"
+      },
+      "force_fresh": {
+        "label": "Force Fresh",
+        "key": "force_fresh",
+        "type": "toggle",
+        "description": "Bypass the cache and force a fresh extraction"
+      }
+    },
+    "get_scrape_result": {
+      "job_id": {
+        "label": "Job ID",
+        "key": "job_id",
+        "type": "codehinter",
+        "lineNumbers": false,
+        "description": "The jobId returned by Extract Website Data",
+        "width": "320px",
+        "height": "36px",
+        "className": "codehinter-plugins"
+      }
+    },
+    "search": {
+      "prompt": {
+        "label": "Search query",
+        "key": "prompt",
+        "type": "codehinter",
+        "description": "The search query or question",
+        "height": "150px",
+        "editorType": "extendedSingleLine"
+      },
+      "limit": {
+        "label": "Max results",
+        "key": "limit",
+        "type": "codehinter",
+        "lineNumbers": false,
+        "description": "Maximum number of results to return (default 5, max 20)",
+        "placeholder": "{{5}}",
+        "width": "320px",
+        "height": "36px",
+        "className": "codehinter-plugins"
+      }
+    },
+    "agentic_search": {
+      "prompt": {
+        "label": "Research prompt",
+        "key": "prompt",
+        "type": "codehinter",
+        "description": "The research question or topic (max 8KB)",
+        "height": "150px",
+        "editorType": "extendedSingleLine"
+      },
+      "use_browser": {
+        "label": "Use Browser",
+        "key": "use_browser",
+        "type": "toggle",
+        "description": "Use a headless browser for citation scraping — matches the API default"
+      },
+      "schema": {
+        "label": "Result schema (JSON)",
+        "key": "schema",
+        "type": "codehinter",
+        "description": "Optional JSON Schema (max 50KB) for the structured output",
+        "height": "150px",
+        "editorType": "extendedSingleLine"
+      }
+    },
+    "get_agentic_search_result": {
+      "job_id": {
+        "label": "Job ID",
+        "key": "job_id",
+        "type": "codehinter",
+        "lineNumbers": false,
+        "description": "The job_id returned by Start Agentic Search",
+        "width": "320px",
+        "height": "36px",
+        "className": "codehinter-plugins"
+      }
+    }
+  }
+}

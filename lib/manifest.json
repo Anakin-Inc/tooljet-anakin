@@ -1,0 +1,39 @@
+{
+  "$schema": "https://raw.githubusercontent.com/ToolJet/ToolJet/develop/plugins/schemas/manifest.schema.json",
+  "title": "Anakin datasource",
+  "description": "A schema defining the Anakin datasource",
+  "type": "api",
+  "source": {
+    "name": "Anakin",
+    "kind": "anakin",
+    "exposedVariables": {
+      "isLoading": false,
+      "data": {},
+      "rawData": {}
+    },
+    "options": {
+      "api_key": {
+        "type": "string",
+        "encrypted": true
+      }
+    },
+    "customTesting": true
+  },
+  "defaults": {
+    "api_key": {
+      "value": ""
+    }
+  },
+  "properties": {
+    "api_key": {
+      "label": "API key",
+      "key": "api_key",
+      "type": "password",
+      "description": "Api key for Anakin",
+      "helpText": "Get a free key at <a href='https://anakin.io/dashboard' target='_blank' rel='noreferrer'>anakin.io/dashboard</a> — 500 credits, no card required."
+    }
+  },
+  "required": [
+    "api_key"
+  ]
+}
