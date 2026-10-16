@@ -2,89 +2,75 @@ export type SourceOptions = {
   api_key: string;
 };
 
+/**
+ * Query fields come from ToolJet's codehinter, so any of them can arrive as a string, the resolved
+ * value of a `{{ }}` expression, or empty. `lib/index.ts` coerces each to the type the API expects.
+ */
+type Field = unknown;
+
 export type QueryOptions = {
   operation: string;
-
-  // Extract Website Data / Get Scrape Result
-  url?: string;
-  generate_json?: boolean;
-  country?: string;
-  use_browser?: boolean;
-  force_fresh?: boolean;
-  job_id?: string;
-  session_id?: string;
-  session_name?: string;
-
-  // Perform AI Search / Start Agentic Search / Get Agentic Search Result
-  prompt?: string;
-  limit?: number;
-  schema?: Record<string, unknown>;
-
-  // Map a Site / Get Map Result
-  depth?: number;
-  limit_per_level?: number;
-  include_subdomains?: boolean;
-  include_external_links?: boolean;
-  search?: string;
-
-  // Crawl a Site / Get Crawl Result
-  max_pages?: number;
-  include_patterns?: string[];
-  exclude_patterns?: string[];
-
-  // Wire: discovery
-  q?: string;
-  slug?: string;
-
-  // Wire: execution (Run Wire Read/Write Action, Get Wire Job Result)
-  action_id?: string;
-  params?: Record<string, unknown>;
-  credential_id?: string;
-  identity_id?: string;
-
-  // Wire: identities & login
-  catalog_id?: string;
-  catalog_slug?: string;
-  identity_name?: string;
-  source_id?: string;
-  source_ref?: Record<string, unknown>;
-
-  // Wire: build
-  website_url?: string;
-  goal?: string;
-  visibility?: 'private' | 'public';
-  force?: boolean;
-
-  // Website Monitoring
-  interval_minutes?: number;
-  scope?: 'page' | 'site' | 'wire';
-  watch_mode?: 'full_page' | 'specific_data';
-  watch_format?: 'markdown' | 'html' | 'cleaned_html';
-  output_schema?: Record<string, unknown>;
-  ai_mode?: boolean;
-  ai_goal?: string;
-  is_active?: boolean;
-  expires_at?: string;
-  alert_webhook_url?: string;
-  alert_emails?: string;
-  max_depth?: number;
-  wire_action_id?: string;
-  wire_catalog_slug?: string;
-  wire_credential_id?: string;
-  wire_params?: Record<string, unknown>;
-  wire_watch_paths?: string[];
-  id?: string;
-  action?: 'pause' | 'resume' | 'run_now' | 'delete';
-
-  // AI Visibility
-  query?: string;
-  sources?: string[];
-  search_id?: string;
-
-  // Browser sessions
-  domain?: string;
-
-  // AI browser automation
-  max_steps?: number;
-  timeout_ms?: number;
+  url?: Field;
+  generate_json?: Field;
+  country?: Field;
+  use_browser?: Field;
+  force_fresh?: Field;
+  session_id?: Field;
+  session_name?: Field;
+  job_id?: Field;
+  limit?: Field;
+  depth?: Field;
+  limit_per_level?: Field;
+  include_subdomains?: Field;
+  include_external_links?: Field;
+  search?: Field;
+  max_pages?: Field;
+  include_patterns?: Field;
+  exclude_patterns?: Field;
+  prompt?: Field;
+  schema?: Field;
+  q?: Field;
+  slug?: Field;
+  action_id?: Field;
+  params?: Field;
+  credential_id?: Field;
+  identity_id?: Field;
+  catalog_id?: Field;
+  catalog_slug?: Field;
+  identity_name?: Field;
+  source_id?: Field;
+  source_ref?: Field;
+  website_url?: Field;
+  goal?: Field;
+  visibility?: Field;
+  force?: Field;
+  actions?: Field;
+  id?: Field;
+  status?: Field;
+  page?: Field;
+  include_events?: Field;
+  interval_minutes?: Field;
+  scope?: Field;
+  watch_mode?: Field;
+  watch_format?: Field;
+  output_schema?: Field;
+  ai_mode?: Field;
+  ai_goal?: Field;
+  is_active?: Field;
+  expires_at?: Field;
+  alert_webhook_url?: Field;
+  alert_emails?: Field;
+  max_depth?: Field;
+  wire_action_id?: Field;
+  wire_catalog_slug?: Field;
+  wire_credential_id?: Field;
+  wire_params?: Field;
+  wire_watch_paths?: Field;
+  action?: Field;
+  query?: Field;
+  sources?: Field;
+  search_id?: Field;
+  domain?: Field;
+  max_steps?: Field;
+  timeout_ms?: Field;
 };

@@ -1,6 +1,5 @@
-node_modules/
-dist/
-build/
-target/
-.DS_Store
-*.log
+node_modules
+lib/*.d.*
+lib/*.js
+lib/*.js.map
+dist/*

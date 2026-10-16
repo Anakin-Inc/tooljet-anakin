@@ -1,86 +1,49 @@
-# ToolJet — submission instructions
+# ToolJet: how this ships
 
-Real, PR-buildable marketplace confirmed:
-`docs.tooljet.com/docs/contributing-guide/marketplace/creating-a-plugin`,
-normally scaffolded via `tooljet-cli plugin create <name> --type api`. This
-directory matches that generated shape by hand, cross-checked against real,
-current plugins in the repo (`plugins/packages/sendgrid`, `zendesk`,
-`twilio`, `appwrite`, pulled live via `gh api`/raw.githubusercontent.com —
-manifest.json, operations.json, and index.ts structure, plus the `dropdown`
-sub-field type used for enum params like Wire's `visibility` and monitor's
-`scope`/`watchMode`/`action`) and `plugins/packages/common`'s real
-interfaces (`QueryService`, `QueryError`, `QueryResult`,
-`ConnectionTestResult`).
+## Route
 
-## What's here
+Third-party connectors go in ToolJet's **marketplace**, `marketplace/plugins/<id>/`
+of `ToolJet/ToolJet` (see `marketplace/AGENTS.md` upstream). Built-in connectors
+live in `plugins/packages/`; this plugin used to target that folder, which was
+the wrong route. A PR to `ToolJet/ToolJet` (`main`) adds:
 
-```
-lib/manifest.json      datasource definition — API key auth field
-lib/operations.json    28 operations' input fields
-lib/types.ts            SourceOptions / QueryOptions
-lib/index.ts             QueryService implementation (got-based HTTP calls)
-lib/icon.svg
-package.json, tsconfig.json
-```
+- `marketplace/plugins/anakin/` (this repo's contents)
+- an `anakin` entry in `server/src/assets/marketplace/plugins.json`
+  (`id` = directory name = manifest `source.kind`)
+- `marketplace/package-lock.json` (workspace link from `npm i`)
+- `docs/docs/marketplace/plugins/anakin.md`, plus entries in
+  `docs/docs/marketplace/marketplace_overview.md` and `docs/sidebars.js`
 
-28 operations across scraping, mapping, crawling, AI search, agentic
-search, Wire automation, website monitoring, AI visibility, browser
-sessions, and AI browser automation — full parity with `anakin-mcp`'s 21
-tools (3 were already covered; this pass added operations for the
-remaining 18, several split into submit/get-result pairs to fit ToolJet's
-synchronous per-query execution model — see README.md for the full table
-and the reasoning).
+Once merged and released, ToolJet uploads marketplace builds to its marketplace
+host, and the plugin appears under **Settings > Marketplace** on **self-hosted**
+ToolJet. Marketplace pages are hidden on ToolJet Cloud
+(`frontend/src/Routes/MarketplaceRoute.jsx`), so Cloud users can't install
+marketplace plugins.
 
-## Verified, not assumed
+## Verified (2026-10-16, against ToolJet main)
 
-`@tooljet-plugins/common` isn't published to npm (`file:../common` inside
-their monorepo — confirmed via `npm view`, 404). Rather than write a
-hand-rolled stub of its interfaces, this pass fetched the actual package
-source live from `ToolJet/ToolJet@main` (`plugins/packages/common/lib/*.ts`,
-all 11 files — `query.error.ts`, `query_result.type.ts`,
-`connection_test_result.type.ts`, `query_service.interface.ts`, `oauth.ts`,
-`utils.helper.ts`, `ssrf-protection.ts`, `queryBuilder.ts`, `app.type.ts`,
-`user.type.ts`, `index.ts`) and the *actual* compiler settings this plugin
-builds under: `plugins/tsconfig.json` (`strict: false`, `target: es2015`,
-`module: commonjs`, `moduleResolution: node`, `skipLibCheck: true`,
-`composite: true`) — the exact file this package's own `tsconfig.json`
-extends via `"../../tsconfig.json"` once placed at
-`plugins/packages/anakin/`. Installed the real package as a `file:` dependency
-(matching this plugin's own `package.json` shape) and ran both
-`tsc --noEmit` and a full `tsc -b` emit against `lib/index.ts` + `lib/types.ts`
-— **clean, exit 0**, dist output produced. This is a materially stronger
-check than typechecking against a hand-written stub: it caught one real bug
-in the original 5-operation code — `testConnection` declared
-`Promise<object>` where the real `QueryService` interface requires
-`Promise<ConnectionTestResult>` (`{status: 'ok'|'failed', ...}`) — now fixed.
+From `marketplace/` in a ToolJet checkout with this plugin copied in:
 
-Ground truth for the 18 newly-added operations' request/response shapes
-came directly from `anakin-mcp/src/client.ts` and `anakin-mcp/src/tools/*.ts`
-(the same REST API, already implemented and tested there).
+| Check | Result |
+|---|---|
+| `npm run build --workspace=@tooljet-marketplace/anakin` (ncc) | pass, exit 0 |
+| `npx tsc --noEmit -p plugins/anakin/tsconfig.json` | pass, exit 0 |
+| `npm run validate:plugin -- anakin` | `PASS anakin` |
+| `npm run validate:plugin -- --all` | 48 checked, 0 failed |
+| `ESLINT_USE_FLAT_CONFIG=false npx eslint 'plugins/anakin/lib/**/*.ts'` | clean, exit 0 |
+| `any` in `lib/*.ts` | 0 |
+| Built `dist/index.js` against a local fake api.anakin.io (31 cases: request paths, bodies, coercion, required fields, error text, testConnection) | 31/31 |
+| Built `dist/index.js` `testConnection` against the live API with an invalid key | `{"status":"failed","message":"HTTP 401: UNAUTHORIZED: Invalid API key."}` |
 
-This verifies the code is internally type-consistent with the real
-interfaces and real compiler settings as of today; it does not verify
-against the monorepo's actual Nx build orchestration or the plugin CLI's
-scaffolding conventions, which needs a real ToolJet dev checkout.
+Not verified: a happy-path call with a real API key, and the UI check in a running
+ToolJet instance (needs a full ToolJet server and Postgres).
 
-## Steps (needs the account owner)
+## Upstream process notes
 
-1. Clone `ToolJet/ToolJet`, copy this directory to
-   `plugins/packages/anakin/`.
-2. Run the real build from repo root (`npm run build` scoped to the
-   plugin, per their contributing guide) to catch anything the check above
-   couldn't (Nx workspace resolution, the actual `got` version pinned in
-   their root `package.json`, etc).
-3. Test in a running ToolJet instance — in particular the async
-   submit/get-result operations (Map a Site, Crawl a Site, Run Wire
-   Read/Write Action, Start AI Visibility Search, Run Browser Task) and
-   Wire's write-path/build/login operations, which have side effects on
-   the target site or Anakin account and are best exercised against a
-   sandbox catalog action first.
-4. Open a PR per `docs.tooljet.com/docs/contributing-guide/marketplace/creating-a-plugin`.
-
-## Not done
-
-Typechecks against the real `@tooljet-plugins/common` source and the real
-plugin-tier compiler settings, but never built or run inside the actual
-ToolJet monorepo/Nx workspace or a live ToolJet instance.
+- CONTRIBUTING asks feature contributors to open an issue first and wait for a
+  maintainer. Recent third-party marketplace PRs (Firecrawl #17530, Directus
+  #18412, Grok #18312) went straight to a PR, and most are still open. Merged
+  marketplace plugins (OpenRouter #18005, TypeSafe #18006) came from ToolJet staff.
+- The CLA assistant asks every committer to sign on the PR.
+- `plugins.json` gets a conflict whenever another plugin lands. Rebase and re-append
+  the entry; don't hand-merge.

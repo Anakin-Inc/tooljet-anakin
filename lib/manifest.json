@@ -17,7 +17,7 @@
         "encrypted": true
       }
     },
-    "customTesting": true
+    "customTesting": false
   },
   "defaults": {
     "api_key": {
@@ -29,8 +29,9 @@
       "label": "API key",
       "key": "api_key",
       "type": "password",
-      "description": "Api key for Anakin",
-      "helpText": "Get a free key at <a href='https://anakin.io/dashboard' target='_blank' rel='noreferrer'>anakin.io/dashboard</a> — 500 credits, no card required."
+      "description": "Anakin API key (starts with ask_)",
+      "helpText": "Get a free key at <a href='https://anakin.io/dashboard' target='_blank' rel='noreferrer'>anakin.io/dashboard</a> (500 free credits, no card required).",
+      "encrypted": true
     }
   },
   "required": [
