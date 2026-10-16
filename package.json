@@ -1,5 +1,5 @@
 {
-  "name": "@tooljet-plugins/anakin",
+  "name": "@tooljet-marketplace/anakin",
   "version": "1.0.0",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -12,11 +12,12 @@
   ],
   "scripts": {
     "test": "echo \"Error: run tests from root\" && exit 1",
-    "build": "tsc -b",
-    "clean": "rimraf ./dist && rimraf tsconfig.tsbuildinfo"
+    "build": "ncc build lib/index.ts -o dist",
+    "watch": "ncc build lib/index.ts -o dist --watch"
   },
+  "homepage": "https://github.com/tooljet/tooljet#readme",
   "dependencies": {
-    "@tooljet-plugins/common": "file:../common",
+    "@tooljet-marketplace/common": "file:../common",
     "got": "^11.8.6"
   }
 }
